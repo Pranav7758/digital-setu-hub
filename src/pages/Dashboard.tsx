@@ -22,6 +22,8 @@ import {
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import DocumentUpload from '@/components/DocumentUpload';
+import DocumentList from '@/components/DocumentList';
 
 interface Profile {
   id: string;
@@ -268,20 +270,9 @@ export default function Dashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="documents">
-            <Card className="card-3d border-0">
-              <CardHeader>
-                <CardTitle>Document Management</CardTitle>
-                <CardDescription>Upload and manage your identity documents</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Document Upload Coming Soon</h3>
-                  <p className="text-muted-foreground">This feature will be available in the next update</p>
-                </div>
-              </CardContent>
-            </Card>
+          <TabsContent value="documents" className="space-y-6">
+            <DocumentUpload onUploadComplete={fetchDocuments} />
+            <DocumentList documents={documents} />
           </TabsContent>
 
           <TabsContent value="digital-id">
