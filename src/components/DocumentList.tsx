@@ -66,15 +66,28 @@ export default function DocumentList({ documents }: DocumentListProps) {
     return typeMap[type] || type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
+  const normalizePath = (urlOrPath: string) => {
+    if (!urlOrPath) return urlOrPath;
+    if (urlOrPath.startsWith('http')) {
+      const pubMarker = '/object/public/documents/';
+      const pubIdx = urlOrPath.indexOf(pubMarker);
+      if (pubIdx !== -1) return urlOrPath.slice(pubIdx + pubMarker.length);
+      const anyIdx = urlOrPath.indexOf('/documents/');
+      if (anyIdx !== -1) return urlOrPath.slice(anyIdx + '/documents/'.length);
+    }
+    return urlOrPath.replace(/^\/+/, '');
+  };
+
   const handleView = async (document: Document) => {
     try {
       if (!document.file_url) {
         toast.error('Document URL not available');
         return;
       }
+      const path = normalizePath(document.file_url);
       const { data, error } = await supabase.storage
         .from('documents')
-        .createSignedUrl(document.file_url, 60 * 10);
+        .createSignedUrl(path, 60 * 10);
       if (error || !data?.signedUrl) {
         throw error || new Error('No signed URL');
       }
@@ -92,9 +105,10 @@ export default function DocumentList({ documents }: DocumentListProps) {
         return;
       }
 
+      const path = normalizePath(document.file_url);
       const { data, error } = await supabase.storage
         .from('documents')
-        .createSignedUrl(document.file_url, 60 * 10, { download: document.document_name });
+        .createSignedUrl(path, 60 * 10);
 
       if (error || !data?.signedUrl) {
         throw error || new Error('No signed URL');
