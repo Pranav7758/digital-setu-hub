@@ -12,6 +12,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Document {
   id: string;
@@ -65,11 +66,22 @@ export default function DocumentList({ documents }: DocumentListProps) {
     return typeMap[type] || type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
-  const handleView = (document: Document) => {
-    if (document.file_url) {
-      window.open(document.file_url, '_blank');
-    } else {
-      toast.error('Document URL not available');
+  const handleView = async (document: Document) => {
+    try {
+      if (!document.file_url) {
+        toast.error('Document URL not available');
+        return;
+      }
+      const { data, error } = await supabase.storage
+        .from('documents')
+        .createSignedUrl(document.file_url, 60 * 10);
+      if (error || !data?.signedUrl) {
+        throw error || new Error('No signed URL');
+      }
+      window.open(data.signedUrl, '_blank');
+    } catch (error) {
+      console.error('View error:', error);
+      toast.error('Failed to open document');
     }
   };
 
@@ -80,9 +92,16 @@ export default function DocumentList({ documents }: DocumentListProps) {
         return;
       }
 
-      // Create a temporary link element and trigger download
+      const { data, error } = await supabase.storage
+        .from('documents')
+        .createSignedUrl(document.file_url, 60 * 10, { download: document.document_name });
+
+      if (error || !data?.signedUrl) {
+        throw error || new Error('No signed URL');
+      }
+
       const link = window.document.createElement('a');
-      link.href = document.file_url;
+      link.href = data.signedUrl;
       link.download = document.document_name;
       window.document.body.appendChild(link);
       link.click();

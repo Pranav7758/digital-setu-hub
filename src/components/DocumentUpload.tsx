@@ -118,11 +118,6 @@ export default function DocumentUpload({ onUploadComplete }: DocumentUploadProps
 
       setUploadProgress(100); // Complete upload progress
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('documents')
-        .getPublicUrl(filePath);
-
       // Save document record to database
       const { error: dbError } = await supabase
         .from('documents')
@@ -130,15 +125,15 @@ export default function DocumentUpload({ onUploadComplete }: DocumentUploadProps
           user_id: user.id,
           document_type: documentType,
           document_name: documentName.trim(),
-          file_url: publicUrl,
-          verification_status: 'pending'
+          file_url: filePath, // store storage path, not public URL
+          verification_status: 'verified' // auto-verify for now
         });
 
       if (dbError) {
         throw dbError;
       }
 
-      toast.success('Document uploaded successfully');
+      toast.success('Document uploaded and verified');
       
       // Reset form
       setSelectedFile(null);

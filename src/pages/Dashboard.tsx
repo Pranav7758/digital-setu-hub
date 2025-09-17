@@ -315,13 +315,7 @@ export default function Dashboard() {
                       </div>
                       <div className="bg-white p-2 rounded">
                         <QRCode 
-                          data={`BEGIN:VCARD
-VERSION:3.0
-FN:${profile?.full_name || 'User'}
-EMAIL:${user?.email || ''}
-TEL:${profile?.phone || ''}
-NOTE:Virtual Setu Digital ID - ${user?.id?.slice(0, 8).toUpperCase()}
-END:VCARD`}
+                          data={`BEGIN:VCARD\r\nVERSION:3.0\r\nN:${profile?.full_name || 'User'};;;;\r\nFN:${profile?.full_name || 'User'}\r\nEMAIL:${user?.email || ''}\r\nTEL:${profile?.phone || ''}\r\nNOTE:Virtual Setu Digital ID - ${user?.id?.slice(0, 8).toUpperCase()}\r\nEND:VCARD`}
                           size={48}
                         />
                       </div>
