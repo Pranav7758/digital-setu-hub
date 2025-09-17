@@ -17,7 +17,8 @@ export default function QRCode({ data, size = 128, className = '' }: QRCodeProps
         setLoading(true);
         const url = await QRCodeLib.toDataURL(data, {
           width: size,
-          margin: 1,
+          margin: 2,
+          errorCorrectionLevel: 'H',
           color: {
             dark: '#000000',
             light: '#FFFFFF'

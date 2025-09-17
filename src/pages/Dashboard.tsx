@@ -316,7 +316,7 @@ export default function Dashboard() {
                       <div className="bg-white p-2 rounded">
                         <QRCode 
                           data={`${window.location.origin}/i/${user?.id}`}
-                          size={48}
+                          size={128}
                         />
                       </div>
                     </div>
