@@ -24,6 +24,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import DocumentUpload from '@/components/DocumentUpload';
 import DocumentList from '@/components/DocumentList';
+import QRCode from '@/components/QRCode';
 
 interface Profile {
   id: string;
@@ -313,7 +314,18 @@ export default function Dashboard() {
                         <p className="text-sm font-mono">{user?.id?.slice(0, 8).toUpperCase()}</p>
                       </div>
                       <div className="bg-white p-2 rounded">
-                        <QrCode className="h-12 w-12 text-primary" />
+                        <QRCode 
+                          data={JSON.stringify({
+                            id: user?.id,
+                            name: profile?.full_name,
+                            email: user?.email,
+                            phone: profile?.phone,
+                            emergency_contact: profile?.emergency_contact,
+                            card_id: user?.id?.slice(0, 8).toUpperCase(),
+                            issued: new Date().toISOString()
+                          })}
+                          size={48}
+                        />
                       </div>
                     </div>
                   </div>
