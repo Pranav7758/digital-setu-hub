@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,8 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import { Shield, Mail, Lock, User, Phone, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Register() {
+  const navigate = useNavigate();
+  const { signUp } = useAuth();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -42,7 +45,7 @@ export default function Register() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
@@ -61,8 +64,24 @@ export default function Register() {
       return;
     }
 
-    // TODO: Implement Firebase registration
-    toast.success('Registration successful! Please check your email for verification.');
+    try {
+      const { error } = await signUp(formData.email, formData.password, {
+        full_name: formData.fullName,
+        phone: formData.phone,
+        pin: formData.pin,
+        owned_documents: formData.ownedDocuments
+      });
+      
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success('Registration successful! Please check your email for verification.');
+        // Redirect to auth page
+        navigate('/auth');
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred');
+    }
   };
 
   return (
@@ -258,7 +277,7 @@ export default function Register() {
               <div className="text-center">
                 <span className="text-sm text-foreground/70">
                   Already have an account?{' '}
-                  <Link to="/login" className="text-primary hover:underline font-medium">
+                  <Link to="/auth" className="text-primary hover:underline font-medium">
                     Sign in
                   </Link>
                 </span>
