@@ -193,7 +193,11 @@ serve(async (req) => {
   // GET request - show HTML page
   if (req.method === 'GET' && uid) {
     return new Response(htmlPage(uid), {
-      headers: { 'Content-Type': 'text/html' }
+      headers: { 
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-cache',
+        'X-Content-Type-Options': 'nosniff'
+      }
     });
   }
 
