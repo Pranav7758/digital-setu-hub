@@ -183,20 +183,29 @@ const htmlPage = (uid: string) => `
 `;
 
 serve(async (req) => {
+  console.log('Share-docs function called:', req.method, req.url);
+  
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   const url = new URL(req.url);
   const uid = url.searchParams.get('uid');
+  
+  console.log('UID parameter:', uid);
 
   // GET request - show HTML page
   if (req.method === 'GET' && uid) {
-    return new Response(htmlPage(uid), {
+    console.log('Serving HTML page for UID:', uid);
+    const html = htmlPage(uid);
+    console.log('HTML length:', html.length);
+    
+    return new Response(html, {
       headers: { 
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'no-cache',
-        'X-Content-Type-Options': 'nosniff'
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       }
     });
   }
