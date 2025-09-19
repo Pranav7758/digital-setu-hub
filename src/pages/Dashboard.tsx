@@ -315,7 +315,7 @@ export default function Dashboard() {
                       </div>
                       <div className="bg-white p-2 rounded">
                         <QRCode 
-                          data={`${window.location.origin}/i/${user?.id}`}
+                          data={`https://virtual-setu-hub.vercel.app/i/${user?.id}`}
                           size={128}
                         />
                       </div>
