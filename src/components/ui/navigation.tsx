@@ -40,7 +40,7 @@ export const Navigation = () => {
             </Link>
             <div className="flex items-center space-x-4">
               <Button variant="ghost" asChild>
-                <Link to="/login">Login</Link>
+                <Link to="/auth">Login</Link>
               </Button>
               <Button asChild className="bg-gradient-primary hover:scale-105 transition-transform glow-primary">
                 <Link to="/register">Get Started</Link>
@@ -85,7 +85,7 @@ export const Navigation = () => {
               </Link>
               <div className="flex flex-col space-y-2 px-3 pt-2">
                 <Button variant="ghost" asChild>
-                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>Login</Link>
+                  <Link to="/auth" onClick={() => setIsMenuOpen(false)}>Login</Link>
                 </Button>
                 <Button asChild className="bg-gradient-primary">
                   <Link to="/register" onClick={() => setIsMenuOpen(false)}>Get Started</Link>
