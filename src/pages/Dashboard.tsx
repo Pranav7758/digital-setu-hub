@@ -17,7 +17,8 @@ import {
   CheckCircle,
   AlertCircle,
   Clock,
-  CreditCard
+  CreditCard,
+  MessageCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
@@ -25,6 +26,8 @@ import { supabase } from '@/integrations/supabase/client';
 import DocumentUpload from '@/components/DocumentUpload';
 import DocumentList from '@/components/DocumentList';
 import QRCode from '@/components/QRCode';
+import SmartChecklist from '@/components/SmartChecklist';
+import AIChatbot from '@/components/AIChatbot';
 
 interface Profile {
   id: string;
@@ -50,6 +53,7 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showChatbot, setShowChatbot] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -177,9 +181,10 @@ export default function Dashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-card-glass/50 backdrop-blur-xl">
+          <TabsList className="grid w-full grid-cols-5 bg-card-glass/50 backdrop-blur-xl">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>
+            <TabsTrigger value="checklist">Smart Checklist</TabsTrigger>
             <TabsTrigger value="digital-id">Digital ID</TabsTrigger>
             <TabsTrigger value="profile">Profile</TabsTrigger>
           </TabsList>
@@ -272,8 +277,14 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="documents" className="space-y-6">
-            <DocumentUpload onUploadComplete={fetchDocuments} />
+            <div id="document-upload">
+              <DocumentUpload onUploadComplete={fetchDocuments} />
+            </div>
             <DocumentList documents={documents} />
+          </TabsContent>
+
+          <TabsContent value="checklist" className="space-y-6">
+            <SmartChecklist />
           </TabsContent>
 
           <TabsContent value="digital-id">
@@ -403,6 +414,24 @@ export default function Dashboard() {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* Floating Chatbot Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button
+          onClick={() => setShowChatbot(!showChatbot)}
+          className="rounded-full w-14 h-14 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-primary text-white"
+          size="icon"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </Button>
+      </div>
+
+      {/* AI Chatbot */}
+      {showChatbot && (
+        <div className="fixed bottom-24 right-6 z-50 w-80 h-96">
+          <AIChatbot documents={documents} onClose={() => setShowChatbot(false)} />
+        </div>
+      )}
     </div>
   );
 }
