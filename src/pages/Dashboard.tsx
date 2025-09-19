@@ -315,7 +315,7 @@ export default function Dashboard() {
                       </div>
                       <div className="bg-white p-2 rounded">
                         <QRCode 
-                          data={`https://mfycihjvtpsxixptmasa.supabase.co/functions/v1/share-docs?uid=${user?.id}`}
+                          data={`${window.location.origin}/i/${user?.id}`}
                           size={128}
                         />
                       </div>
